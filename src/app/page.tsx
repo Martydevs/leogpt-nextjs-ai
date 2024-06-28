@@ -1,35 +1,46 @@
 "use client";
 
 import { useChat } from "ai/react";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import SentIcon from "@/components/icons/send";
 import Prompt from "@/components/ui/prompt";
+import Bubble from "@/components/ui/chat-bubble";
+import MainLayout from "@/components/layouts/main";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 export default function Home() {
-  const { messages, handleInputChange, handleSubmit, isLoading } = useChat();
+  const { messages, handleInputChange, handleSubmit, isLoading, error } = useChat();
+
+  useEffect(() => {
+    if (error) {
+      toast.error("Ocurrio un error al comunicar con Leo: " + error.message)
+    }
+  }, [error])
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between">
-      <section className="h-screen w-3/4 m-auto flex flex-col items-center justify-between">
-        <section className="max-h-80 h-full w-full overflow-y-auto flex flex-col items-center py-2">
+    <MainLayout>
+      {messages.length > 0 ? (
+        <section className="h-full w-full overflow-y-auto flex flex-col items-center">
           {messages.map(({ id, role, content }) => (
-            <div key={id} className={`whitespace-pre-wrap px-4 py-2 rounded-lg ${role === "assistant" ? "self-start" : "self-end"}`}>
-              {role === "user" && <strong>Yo: </strong>}
-              {role === "assistant" && <strong>Leo: </strong>}
-              {content}
-            </div>
+            <Bubble
+              id={id}
+              role={role}
+              content={content}
+              assistantName={"Leo"}
+            />
           ))}
         </section>
+      ) : (
+        <section className="min-h-80 max-h-80 w-full flex flex-col items-center justify-center">
+          <h2 className="text-2xl font-bold">Bienvenido!</h2>
+          <p>Por favor, escribe tu primer mensaje.</p>
+        </section>
+      )}
 
-        
-          <Prompt 
-            handleSubmit={handleSubmit}
-            handleChange={handleInputChange}
-            loading={isLoading}
-          />
-      </section>
-    </main>
+      <Prompt
+        handleSubmit={handleSubmit}
+        handleChange={handleInputChange}
+        loading={isLoading}
+      />
+    </MainLayout>
   );
 }

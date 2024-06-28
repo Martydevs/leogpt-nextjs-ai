@@ -1,7 +1,6 @@
 import "@/app/globals.css";
 import { Inter as FontSans } from "next/font/google";
 
-import Navbar from "@/components/ui/navbar";
 import { cn } from "@/lib/utils";
 import Providers from "@/components/providers";
 
@@ -25,7 +24,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
         )}
       >
         <Providers>
-          <Navbar />
           {children}
         </Providers>
       </body>

@@ -1,6 +1,6 @@
 "use client";
 
-import { CornerDownLeft, Mic, Paperclip } from "lucide-react";
+import { CornerDownLeft, Mic, Paperclip, Trash } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -10,7 +10,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useRef } from "react";
+import { LucideLoader } from "../icons/loader";
 
 interface PromptProps {
   handleSubmit: () => void;
@@ -27,6 +28,7 @@ export default function Prompt({
     <section className="w-full h-1/6">
       <form
         onSubmit={handleSubmit}
+        autoComplete="off"
         className="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring w-full h-auto"
       >
         <Label htmlFor="message" className="sr-only">
@@ -41,7 +43,7 @@ export default function Prompt({
         <div className="flex items-center p-3 pt-0">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" type="button">
                 <Paperclip className="size-4" />
                 <span className="sr-only">Attach file</span>
               </Button>
@@ -50,16 +52,25 @@ export default function Prompt({
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" type="button">
                 <Mic className="size-4" />
                 <span className="sr-only">Use Microphone</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent side="top">Use Microphone</TooltipContent>
           </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" type="reset">
+                <Trash className="size-4" />
+                <span className="sr-only">Clear prompt</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top">Use Microphone</TooltipContent>
+          </Tooltip>
           <Button type="submit" size="sm" className="ml-auto gap-1.5">
             {loading ? "Sending..." : "Send"}
-            <CornerDownLeft className="size-3.5" />
+            {loading ? <LucideLoader className="animate-spin" size={25} /> : <CornerDownLeft />}
           </Button>
         </div>
       </form>
