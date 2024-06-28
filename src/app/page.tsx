@@ -22,7 +22,7 @@ export default function Home() {
         <section className="h-full w-full overflow-y-auto flex flex-col items-center">
           {messages.map(({ id, role, content }) => (
             <Bubble
-              id={id}
+              key={id}
               role={role}
               content={content}
               assistantName={"Leo"}
