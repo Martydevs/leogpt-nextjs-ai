@@ -10,7 +10,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ChangeEvent, useRef } from "react";
+import { ChangeEvent } from "react";
 import { LucideLoader } from "../icons/loader";
 
 interface PromptProps {
@@ -40,7 +40,7 @@ export default function Prompt({
           className="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
           onChange={handleChange}
         />
-        <div className="flex items-center p-3 pt-0">
+        <div className="flex items-center flex-wrap p-3 pt-0">
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant="ghost" size="icon" type="button">
