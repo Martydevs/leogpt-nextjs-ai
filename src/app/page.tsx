@@ -25,7 +25,8 @@ export default function Home() {
       <Prompt
         handleSubmit={handleSubmit}
         handleChange={handleInputChange}
-        loading={isLoading}
+        isLoading={isLoading}
+        isError={error}
       />
     </MainLayout>
   );

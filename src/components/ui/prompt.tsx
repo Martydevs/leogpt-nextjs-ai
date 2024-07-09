@@ -1,6 +1,6 @@
 "use client";
 
-import { CornerDownLeft, Mic, Paperclip, Trash } from "lucide-react";
+import { CornerDownLeft, Mic, Trash } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -10,24 +10,42 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ChangeEvent } from "react";
+import { ChangeEvent, FormEvent, useEffect, useRef } from "react";
 import { LucideLoader } from "../icons/loader";
+import { toast } from "sonner";
 
 interface PromptProps {
   handleSubmit: () => void;
   handleChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
-  loading: boolean;
+  isLoading: boolean;
+  isError?: Error;
 }
 
 export default function Prompt({
   handleSubmit,
   handleChange,
-  loading,
+  isLoading,
+  isError,
 }: PromptProps) {
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (isError) {
+      toast.error("Ocurrio un error, recargue la página e intente de nuevo.")
+    }
+  }, [isError])
+
+  const onSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    handleSubmit();
+    formRef?.current?.reset()
+  }
+
   return (
     <section className="w-full h-1/6">
       <form
-        onSubmit={handleSubmit}
+        ref={formRef}
+        onSubmit={onSubmit}
         autoComplete="off"
         className="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring w-full h-auto"
       >
@@ -36,20 +54,11 @@ export default function Prompt({
         </Label>
         <Textarea
           id="message"
-          placeholder="Type your message here..."
+          placeholder="Escribe tu pregunta aqui..."
           className="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
           onChange={handleChange}
         />
         <div className="flex items-center flex-wrap p-3 pt-0">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" type="button">
-                <Paperclip className="size-4" />
-                <span className="sr-only">Attach file</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="top">Attach File</TooltipContent>
-          </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant="ghost" size="icon" type="button">
@@ -68,9 +77,9 @@ export default function Prompt({
             </TooltipTrigger>
             <TooltipContent side="top">Use Microphone</TooltipContent>
           </Tooltip>
-          <Button type="submit" size="sm" className="ml-auto gap-1.5">
-            {loading ? "Sending..." : "Send"}
-            {loading ? <LucideLoader className="animate-spin" size={25} /> : <CornerDownLeft />}
+          <Button type="submit" size="sm" className="ml-auto gap-1.5" disabled={isLoading}>
+            {isLoading ? "Enviando..." : "Enviar"}
+            {isLoading ? <LucideLoader className="animate-spin" size={25} /> : <CornerDownLeft />}
           </Button>
         </div>
       </form>
