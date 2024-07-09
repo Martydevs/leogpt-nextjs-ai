@@ -1,6 +1,6 @@
 "use client";
 
-import { CornerDownLeft, Mic, Trash } from "lucide-react";
+import { CornerDownLeft, Mic, SquareIcon, Trash } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -10,7 +10,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ChangeEvent, FormEvent, useEffect, useRef } from "react";
+import { ChangeEvent, useEffect, useRef } from "react";
 import { LucideLoader } from "../icons/loader";
 import { toast } from "sonner";
 
@@ -19,6 +19,7 @@ interface PromptProps {
   handleChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   isLoading: boolean;
   isError?: Error;
+  stop: () => void;
 }
 
 export default function Prompt({
@@ -26,6 +27,7 @@ export default function Prompt({
   handleChange,
   isLoading,
   isError,
+  stop,
 }: PromptProps) {
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -35,17 +37,15 @@ export default function Prompt({
     }
   }, [isError])
 
-  const onSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    handleSubmit();
-    formRef?.current?.reset()
-  }
-
   return (
     <section className="w-full h-1/6">
       <form
         ref={formRef}
-        onSubmit={onSubmit}
+        onSubmit={(ev) => {
+          ev.preventDefault();
+          handleSubmit();
+          formRef?.current?.reset()
+        }}
         autoComplete="off"
         className="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring w-full h-auto"
       >
@@ -55,28 +55,41 @@ export default function Prompt({
         <Textarea
           id="message"
           placeholder="Escribe tu pregunta aqui..."
-          className="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
+          className="min-h-16 resize-none border-0 p-4 shadow-none focus-visible:ring-0"
           onChange={handleChange}
         />
-        <div className="flex items-center flex-wrap p-3 pt-0">
+        <div className="flex items-center flex-wrap gap-3 p-2">
+
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" type="button">
+              <Button className="border border-accent rounded-full" variant="ghost" size="icon" type="button">
                 <Mic className="size-4" />
-                <span className="sr-only">Use Microphone</span>
+                <span className="sr-only">Usar micrófono</span>
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="top">Use Microphone</TooltipContent>
+            <TooltipContent side="top">Usar micrófono</TooltipContent>
           </Tooltip>
+
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" type="reset">
+              <Button className="border border-accent rounded-full" variant="ghost" size="icon" type="reset">
                 <Trash className="size-4" />
-                <span className="sr-only">Clear prompt</span>
+                <span className="sr-only">Limpiar entrada</span>
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="top">Use Microphone</TooltipContent>
+            <TooltipContent side="top">Limpiar entrada</TooltipContent>
           </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button className="border border-accent rounded-full" variant={`${isLoading ? "destructive" : "ghost"}`} size="icon" onClick={stop} disabled={!isLoading}>
+                <SquareIcon className="size-4" />
+                <span className="sr-only">Parar procesamiento</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top">Parar procesamiento</TooltipContent>
+          </Tooltip>
+
           <Button type="submit" size="sm" className="ml-auto gap-1.5" disabled={isLoading}>
             {isLoading ? "Enviando..." : "Enviar"}
             {isLoading ? <LucideLoader className="animate-spin" size={25} /> : <CornerDownLeft />}
