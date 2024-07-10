@@ -5,13 +5,9 @@ import { CornerDownLeft, Mic, SquareIcon, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { ChangeEvent, useRef } from "react";
 import { LucideLoader } from "../icons/loader";
+import ChatTooltip from "./chat-tooltip";
 
 interface PromptProps {
   handleSubmit: () => void;
@@ -50,36 +46,26 @@ export default function Prompt({
           onChange={handleChange}
         />
         <div className="flex items-center flex-wrap gap-3 p-2">
+          <ChatTooltip tooltipContent="Usar micrófono">
+            <Button className="border border-accent rounded-full" variant="ghost" size="icon" type="button">
+              <Mic className="size-4" />
+              <span className="sr-only">Usar micrófono</span>
+            </Button>
+          </ChatTooltip>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button className="border border-accent rounded-full" variant="ghost" size="icon" type="button">
-                <Mic className="size-4" />
-                <span className="sr-only">Usar micrófono</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="top">Usar micrófono</TooltipContent>
-          </Tooltip>
+          <ChatTooltip tooltipContent="Limpiar entrada">
+            <Button className="border border-accent rounded-full" variant="ghost" size="icon" type="reset">
+              <Trash className="size-4" />
+              <span className="sr-only">Limpiar entrada</span>
+            </Button>
+          </ChatTooltip>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button className="border border-accent rounded-full" variant="ghost" size="icon" type="reset">
-                <Trash className="size-4" />
-                <span className="sr-only">Limpiar entrada</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="top">Limpiar entrada</TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button className="border border-accent rounded-full" variant={`${isLoading ? "destructive" : "ghost"}`} size="icon" onClick={stop} disabled={!isLoading}>
-                <SquareIcon className="size-4" />
-                <span className="sr-only">Parar procesamiento</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="top">Parar procesamiento</TooltipContent>
-          </Tooltip>
+          <ChatTooltip tooltipContent="Parar procesamiento">
+            <Button className="border border-accent rounded-full" variant={`${isLoading ? "destructive" : "ghost"}`} size="icon" onClick={stop} disabled={!isLoading}>
+              <SquareIcon className="size-4" />
+              <span className="sr-only">Parar procesamiento</span>
+            </Button>
+          </ChatTooltip>
 
           <Button type="submit" size="sm" className="ml-auto gap-1.5" disabled={isLoading}>
             {isLoading ? "Enviando..." : "Enviar"}

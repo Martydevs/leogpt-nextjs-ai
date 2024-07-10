@@ -1,12 +1,10 @@
-import { CopyIcon, Volume2Icon } from "lucide-react";
+import { CopyIcon, PauseIcon, Volume2Icon } from "lucide-react";
 import { Button } from "./button";
 import { Skeleton } from "./skeleton";
 import { toast } from "sonner";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import ChatTooltip from "./chat-tooltip";
+import useSynthesis from "@/hooks/useSynthesis";
+import { useEffect, useState } from "react";
 
 interface BubbleProps {
   role: string;
@@ -15,9 +13,30 @@ interface BubbleProps {
 }
 
 export function Bubble({ role, content, assistantName }: BubbleProps) {
+  const [voice, setVoice] = useState<SpeechSynthesisVoice | null>(null)
+  const { isSpeaking, startToSpeak, stopToSpeak } = useSynthesis(content, voice)
+
+  useEffect(() => {
+    const browsers = navigator.userAgent
+    const voices = window.speechSynthesis.getVoices()
+
+    if (browsers.includes("Edg")) {
+      const raul = voices[265]
+      setVoice(raul)
+    }
+  }, [])
+
   const handleCopy = () => {
     toast.success("Copiado al portapapeles");
     navigator.clipboard.writeText(content)
+  }
+
+  const handleSpeak = () => {
+    if (isSpeaking) {
+      stopToSpeak()
+    } else {
+      startToSpeak()
+    }
   }
 
   return (
@@ -33,23 +52,17 @@ export function Bubble({ role, content, assistantName }: BubbleProps) {
 
       {role === "assistant" && (
         <section className="w-full flex justify-end items-center py-2">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button className="mr-2 rounded-full hover:bg-red-600" variant={"ghost"} onClick={handleCopy}>
-                <CopyIcon className="size-4 text-white" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="top">Copiar al portapapeles</TooltipContent>
-          </Tooltip>
+          <ChatTooltip tooltipContent="Copiar al portapapeles">
+            <Button className="mr-2 rounded-full hover:bg-red-600" variant={"ghost"} onClick={handleCopy}>
+              <CopyIcon className="size-4 text-white" />
+            </Button>
+          </ChatTooltip>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button className="mr-2 rounded-full hover:bg-red-600" variant={"ghost"}>
-                <Volume2Icon className="size-5 text-white" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="top">Reproducir respuesta</TooltipContent>
-          </Tooltip>
+          <ChatTooltip tooltipContent={isSpeaking ? "Detener" : "Reproducir"}>
+            <Button className="mr-2 rounded-full hover:bg-red-600" variant={"ghost"} onClick={handleSpeak}>
+              {isSpeaking ? <PauseIcon className="size-5 text-white" /> : <Volume2Icon className="size-5 text-white" />}
+            </Button>
+          </ChatTooltip>
         </section>
       )}
     </section>

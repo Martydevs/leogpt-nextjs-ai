@@ -7,13 +7,13 @@ import dynamic from "next/dynamic";
 
 import MainLayout from "@/components/layouts/main";
 import { Bubble, LoadingBubble } from "@/components/ui/chat-bubble";
-import { useCustomResponse } from "@/hooks/useCustomResponse";
+import { useCustomLoadingEffect } from "@/hooks/useCustomResponse";
 
 const PromptEntry = dynamic(() => import("@/components/ui/prompt"))
 
 export default function Home() {
   const { messages: aiMessages, handleInputChange, handleSubmit, isLoading, error, stop, setMessages } = useChat();
-  const messages = useCustomResponse(aiMessages, setMessages, isLoading);
+  const messages = useCustomLoadingEffect(aiMessages, setMessages, isLoading);
 
   useEffect(() => {
     if (error) {
