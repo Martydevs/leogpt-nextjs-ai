@@ -11,7 +11,7 @@ import { useCustomResponse } from "@/hooks/useCustomResponse";
 
 export default function Home() {
   const { messages: aiMessages, handleInputChange, handleSubmit, isLoading, error, stop, setMessages } = useChat();
-  const messages = useCustomResponse({ id: "loading", createdAt: new Date(), content: "", role: "assistant" }, aiMessages, setMessages, isLoading);
+  const messages = useCustomResponse(aiMessages, setMessages, isLoading);
 
   useEffect(() => {
     if (error) {
@@ -25,7 +25,7 @@ export default function Home() {
         <section className="h-full w-full overflow-y-auto flex flex-col items-center">
           {messages.map(m => (
             isLoading && m.id === "loading" ? (
-              <LoadingBubble />
+              <LoadingBubble key={m.id} />
             ) : (
               <Bubble
                 key={m.id}

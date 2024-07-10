@@ -1,17 +1,16 @@
 import { Message } from "ai";
 import { useEffect } from "react";
 
-export function useCustomResponse({ id, createdAt, content, role }: Message, messages: Message[], messagesDispatcher: Function, loadingState: boolean) {
-  useEffect(() => {
-    const loadingMessage: Message[] = [{ id, createdAt, content, role }]
-    const messagesWithoutLoading = messages.filter((m) => m.id !== "loading")
+export function useCustomResponse(messages: Message[], messagesDispatcher: Function, isLoading: boolean) {
+  const message: Message = { id: "loading", createdAt: new Date(), content: "", role: "assistant" }
 
-    if (loadingState) {
-      messagesDispatcher([...messages, ...loadingMessage]);
+  useEffect(() => {
+    if (isLoading) {
+      messagesDispatcher([...messages, message]);
     } else {
+      const messagesWithoutLoading = messages.filter(m => m.id !== "loading");
       messagesDispatcher(messagesWithoutLoading);
     }
-  }, [loadingState])
-
+  }, [isLoading]);
   return messages
 }
