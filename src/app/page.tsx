@@ -1,13 +1,15 @@
 "use client";
 
-import { Message, useChat } from "ai/react";
+import { useChat } from "ai/react";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import dynamic from "next/dynamic";
 
-import Prompt from "@/components/ui/prompt";
 import MainLayout from "@/components/layouts/main";
 import { Bubble, LoadingBubble } from "@/components/ui/chat-bubble";
 import { useCustomResponse } from "@/hooks/useCustomResponse";
+
+const PromptEntry = dynamic(() => import("@/components/ui/prompt"))
 
 export default function Home() {
   const { messages: aiMessages, handleInputChange, handleSubmit, isLoading, error, stop, setMessages } = useChat();
@@ -15,7 +17,7 @@ export default function Home() {
 
   useEffect(() => {
     if (error) {
-      toast.error("Ocurrio un error al comunicar con Leo: " + error.message);
+      toast.error("Ocurrio un error al comunicar con Leo, recargue la aplicación e intente de nuevo.");
     }
   }, [error]);
 
@@ -43,11 +45,10 @@ export default function Home() {
         </section>
       )}
 
-      <Prompt
+      <PromptEntry
         handleSubmit={handleSubmit}
         handleChange={handleInputChange}
         isLoading={isLoading}
-        isError={error}
         stop={stop}
       />
     </MainLayout>

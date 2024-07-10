@@ -19,9 +19,9 @@ function Providers({ children }: ProvidersProps) {
       <TooltipProvider>
         {children}
         <Toaster 
-          richColors 
-          duration={3000} 
-          position="top-right"
+          richColors
+          duration={2000} 
+          position="top-center"
         />
       </TooltipProvider>
     </ThemeProvider>

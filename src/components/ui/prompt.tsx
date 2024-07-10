@@ -10,15 +10,13 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ChangeEvent, useEffect, useRef } from "react";
+import { ChangeEvent, useRef } from "react";
 import { LucideLoader } from "../icons/loader";
-import { toast } from "sonner";
 
 interface PromptProps {
   handleSubmit: () => void;
   handleChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
   isLoading: boolean;
-  isError?: Error;
   stop: () => void;
 }
 
@@ -26,28 +24,21 @@ export default function Prompt({
   handleSubmit,
   handleChange,
   isLoading,
-  isError,
   stop,
 }: PromptProps) {
   const formRef = useRef<HTMLFormElement>(null);
-
-  useEffect(() => {
-    if (isError) {
-      toast.error("Ocurrio un error, recargue la página e intente de nuevo.")
-    }
-  }, [isError])
 
   return (
     <section className="w-full h-1/6">
       <form
         ref={formRef}
+        autoComplete="off"
+        className="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring w-full h-auto"
         onSubmit={(ev) => {
           ev.preventDefault();
           handleSubmit();
           formRef?.current?.reset()
         }}
-        autoComplete="off"
-        className="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring w-full h-auto"
       >
         <Label htmlFor="message" className="sr-only">
           Message
