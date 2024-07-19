@@ -1,7 +1,11 @@
 import { Message } from "ai";
 import { useEffect } from "react";
 
-export function useCustomLoadingEffect(messages: Message[], messagesDispatcher: Function, isLoading: boolean) {
+interface CustomMessage extends Message {
+  reactions?: string[]
+}
+
+export default function useCustomLoadingEffect(messages: Message[], messagesDispatcher: Function, isLoading: boolean) {
   const message: Message = { id: "loading", createdAt: new Date(), content: "", role: "assistant" }
 
   useEffect(() => {

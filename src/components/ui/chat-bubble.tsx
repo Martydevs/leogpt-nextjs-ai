@@ -1,18 +1,20 @@
 import { CopyIcon, PauseIcon, Volume2Icon } from "lucide-react";
 import { Button } from "./button";
-import { Skeleton } from "./skeleton";
 import { toast } from "sonner";
 import ChatTooltip from "./chat-tooltip";
 import useSynthesis from "@/hooks/useSynthesis";
 import { useEffect, useState } from "react";
+import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/types";
+import { shortUser } from "@/lib/utils";
 
 interface BubbleProps {
   role: string;
   content: string;
   assistantName: string;
+  user: KindeUser | null;
 }
 
-export function Bubble({ role, content, assistantName }: BubbleProps) {
+function Bubble({ role, content, assistantName, user }: BubbleProps) {
   const [voice, setVoice] = useState<SpeechSynthesisVoice | null>(null)
   const { isSpeaking, startToSpeak, stopToSpeak } = useSynthesis(content, voice)
 
@@ -42,8 +44,8 @@ export function Bubble({ role, content, assistantName }: BubbleProps) {
   return (
     <section className={`my-3 rounded-lg flex flex-col text-pretty max-w-[22rem] w-full shadow-2xl ${role === "assistant" ? "bg-red-500" : "border border-red-500"} ${role === "assistant" ? "self-start ml-2" : "self-end mr-2"}`}>
       <span className="w-full rounded-t-xl bg-red-900 p-2">
-        <p className={`font-bold text-white ${ role === "user" ? "text-right" : "text-left" }`}>
-          {role === "assistant" ? assistantName : "You"}
+        <p className={`font-bold text-white ${ role === "assistant" ? "text-left" : "text-right" }`}>
+          {role === "assistant" ? assistantName : `${shortUser(user?.email)} (Tú)`}
         </p>
       </span>
       <span className='w-full rounded-b-xl p-2'>
@@ -69,14 +71,4 @@ export function Bubble({ role, content, assistantName }: BubbleProps) {
   );
 }
 
-export function LoadingBubble() {
-  return (
-    <section className="w-full max-w-[22rem] min-h-32 my-2 self-start flex flex-col gap-2 border-2 rounded-xl p-2">
-      <span className="w-full h-auto flex items-center justify-start gap-2">
-        <Skeleton className="w-40 h-10 rounded-xl" />
-        <Skeleton className="w-14 h-10 rounded-xl" />
-      </span>
-      <Skeleton className="w-full h-full rounded-xl" />
-    </section>
-  );
-}
+export default Bubble;
