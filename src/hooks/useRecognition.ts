@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 
 export default function useRecognition() {
-  const sr = new webkitSpeechRecognition();
+  const SpeechRecognition = window.SpeechRecognition || webkitSpeechRecognition;
+  const sr = new SpeechRecognition();
   sr.continuous = false;
   sr.lang = "es-ES";
   sr.interimResults = false;
