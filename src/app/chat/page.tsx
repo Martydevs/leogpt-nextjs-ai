@@ -1,10 +1,10 @@
 "use client";
 
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { Message, useChat } from "ai/react";
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 
 import { questions } from "@/mock/questions";
 
@@ -18,8 +18,16 @@ import Bubble from "@/components/ui/chat-bubble";
 import LoadingBubble from "@/components/ui/chat-loading-bubble";
 import Hero from "@/components/ui/hero";
 import QuestionButton from "@/components/ui/question-button";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const PromptEntry = dynamic(() => import("@/components/ui/prompt"));
+const DynamicPromptEntry = dynamic(() => import("../../components/ui/prompt"), {
+  ssr: false,
+  loading: () => (
+    <section className="w-full h-1/6 border rounded-xl p-4">
+      <Skeleton className="w-full h-full rounded-xl" />
+    </section>
+  ),
+});
 
 export default function Chat() {
   const {
@@ -97,7 +105,7 @@ export default function Chat() {
         </Hero>
       )}
 
-      <PromptEntry
+      <DynamicPromptEntry
         handleSubmit={handleSubmit}
         handleChange={handleInputChange}
         isLoading={isLoading}
