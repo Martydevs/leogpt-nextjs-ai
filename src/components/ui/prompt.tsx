@@ -5,10 +5,10 @@ import { CornerDownLeft, Mic, SquareIcon, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ChangeEvent, Dispatch, SetStateAction, useEffect } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
 import { LucideLoader } from "../icons/loader";
 import ChatTooltip from "./chat-tooltip";
-import useRecognition from "@/hooks/useRecognition";
+import { toast } from "sonner";
 
 interface PromptProps {
   handleSubmit: () => void;
@@ -19,21 +19,46 @@ interface PromptProps {
   handleInput: Dispatch<SetStateAction<string>>
 }
 
-export default function Prompt({
-  handleSubmit,
-  handleChange,
-  isLoading,
-  stop,
-  input,
-  handleInput
-}: PromptProps) {
-  const { transcript, isTranscripting, startTranscription, abortTranscription } = useRecognition()
+export default function Prompt({ handleSubmit, handleChange, isLoading, stop, input, handleInput }: PromptProps) {
+  const Recognition = window.SpeechRecognition || webkitSpeechRecognition;
+  const sr = new Recognition();
+  sr.continuous = false;
+  sr.lang = "es-ES";
+  sr.interimResults = false;
+  sr.maxAlternatives = 1;
+
+  const [transcript, setTranscript] = useState("");
+  const [isTranscripting, setIsTranscribing] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     if (!isTranscripting && transcript) {
       handleInput(prev => prev + transcript)
     }
   }, [isTranscripting, transcript])
+
+  const startTranscription = () => {
+    setIsTranscribing(true);
+    sr.start();
+  };
+
+  const abortTranscription = () => {
+    setIsTranscribing(false);
+    sr.abort();
+  };
+
+  sr.onresult = (ev: SpeechRecognitionEvent) => {
+    const transcript = ev.results[ev.results.length - 1][0].transcript;
+    setTranscript(transcript);
+    setIsTranscribing(false);
+    toast.success("Transcripción exitosa!");
+  };
+
+  sr.onerror = (ev: any) => {
+    setIsError(true);
+    setIsTranscribing(false);
+    toast.error("Error al transcribir, intente de nuevo");
+  };
 
   const handleStart = () => {
     if (isTranscripting) {
