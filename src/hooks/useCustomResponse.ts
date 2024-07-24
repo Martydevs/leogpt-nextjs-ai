@@ -1,15 +1,12 @@
-import { Message } from "ai";
+import { MessageStatus } from "@/models/assistants";
+import { Message } from "ai/react";
 import { useEffect } from "react";
 
-interface CustomMessage extends Message {
-  reactions?: string[]
-}
-
-export default function useCustomLoadingEffect(messages: Message[], messagesDispatcher: Function, isLoading: boolean) {
+export default function useCustomLoadingEffect(messages: Message[], messagesDispatcher: Function, isLoading: MessageStatus) {
   const message: Message = { id: "loading", createdAt: new Date(), content: "", role: "assistant" }
 
   useEffect(() => {
-    if (isLoading) {
+    if (isLoading === "in_progress") {
       messagesDispatcher([...messages, message]);
     } else {
       const messagesWithoutLoading = messages.filter(m => m.id !== "loading");

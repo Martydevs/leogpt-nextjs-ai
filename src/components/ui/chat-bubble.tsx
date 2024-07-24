@@ -4,14 +4,13 @@ import { toast } from "sonner";
 import ChatTooltip from "./chat-tooltip";
 import useSynthesis from "@/hooks/useSynthesis";
 import { useEffect, useState } from "react";
-import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/types";
 import { shortUser } from "@/lib/utils";
 
 interface BubbleProps {
   role: string;
   content: string;
   assistantName: string;
-  user: KindeUser | null;
+  user: string;
 }
 
 function Bubble({ role, content, assistantName, user }: BubbleProps) {
@@ -45,7 +44,7 @@ function Bubble({ role, content, assistantName, user }: BubbleProps) {
     <section className={`my-3 rounded-lg flex flex-col text-pretty max-w-[22rem] w-full shadow-2xl ${role === "assistant" ? "bg-red-500" : "border border-red-500"} ${role === "assistant" ? "self-start ml-2" : "self-end mr-2"}`}>
       <span className="w-full rounded-t-xl bg-red-900 p-2">
         <p className={`font-bold text-white ${ role === "assistant" ? "text-left" : "text-right" }`}>
-          {role === "assistant" ? assistantName : `${shortUser(user?.email)} (Tú)`}
+          {role === "assistant" ? assistantName : `${shortUser(user)} (Tú)`}
         </p>
       </span>
       <span className='w-full rounded-b-xl p-2'>

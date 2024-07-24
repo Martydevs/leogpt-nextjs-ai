@@ -1,7 +1,7 @@
 "use client";
 
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-import { Message, useChat } from "ai/react";
+import { useAssistant } from "ai/react";
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -31,21 +31,20 @@ const DynamicPromptEntry = dynamic(() => import("../../components/ui/prompt"), {
 
 export default function Chat() {
   const {
-    messages: aiMessages,
     handleInputChange,
-    handleSubmit,
-    isLoading,
     error,
-    stop,
-    setMessages,
-    input,
+    messages: aiMessages,
     setInput,
-  } = useChat();
-  const messages = useCustomLoadingEffect(aiMessages, setMessages, isLoading);
-  const messagesRef = useFixedScrolling<Message[]>(messages);
+    stop,
+    submitMessage,
+    input,
+    status,
+  } = useAssistant({ api: "/api/thread" });
+  const messages = useCustomLoadingEffect(aiMessages, submitMessage, status);
+  const messagesRef = useFixedScrolling(messages);
 
   const { getUser } = useKindeBrowserClient();
-  const user = getUser();
+  const user = getUser()?.email ?? (getUser()?.username as string);
 
   useEffect(() => {
     if (error) {
@@ -63,7 +62,7 @@ export default function Chat() {
           className="h-full w-full overflow-y-auto flex flex-col items-center"
         >
           {messages.map((m) =>
-            isLoading && m.id === "loading" ? (
+            m.id === "loading" ? (
               <LoadingBubble key={m.id} />
             ) : (
               <Bubble
@@ -78,10 +77,10 @@ export default function Chat() {
         </section>
       ) : (
         <Hero
-          title={`Bienvenido!, ${shortUser(user?.email)}`}
+          title={shortUser(user)}
           description="Escriba una pregunta o bien, seleccione una de las preguntas de abajo."
         >
-          <span className="flex flex-col items-center gap-2 w-full md:flex-row lg:flex-row">
+          <span className="flex items-center gap-2 w-full">
             {[...questions].splice(0, 2).map((n, i) => (
               <QuestionButton
                 key={i}
@@ -92,13 +91,13 @@ export default function Chat() {
             ))}
           </span>
 
-          <span className="flex flex-col items-center gap-2 w-full md:flex-row lg:flex-row">
+          <span className="flex items-center gap-2 w-full">
             {[...questions].splice(2, 4).map((n, i) => (
               <QuestionButton
                 key={i}
                 handleClick={setInput}
                 title={n.title}
-                description="carreras tiene la universidad?"
+                description={n.description}
               />
             ))}
           </span>
@@ -106,12 +105,12 @@ export default function Chat() {
       )}
 
       <DynamicPromptEntry
-        handleSubmit={handleSubmit}
-        handleChange={handleInputChange}
-        isLoading={isLoading}
-        stop={stop}
-        input={input}
         handleInput={setInput}
+        handleInputChange={handleInputChange}
+        input={input}
+        submitMessage={submitMessage}
+        status={status}
+        stop={stop}
       />
     </MainLayout>
   );
