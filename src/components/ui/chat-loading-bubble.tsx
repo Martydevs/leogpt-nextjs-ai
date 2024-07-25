@@ -7,7 +7,7 @@ export default function LoadingBubble() {
         <Skeleton className="w-40 h-10 rounded-xl" />
         <Skeleton className="w-14 h-10 rounded-xl" />
       </span>
-      <Skeleton className="w-full h-full rounded-xl" />
+      <Skeleton className="w-full h-32 rounded-xl" />
     </section>
   );
 }

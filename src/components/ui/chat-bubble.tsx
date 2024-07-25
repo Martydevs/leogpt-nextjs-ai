@@ -40,7 +40,7 @@ function Bubble({ message, user }: BubbleProps) {
   }
 
   return (
-    <section className={`my-3 rounded-lg flex flex-col text-pretty max-w-[22rem] w-full shadow-2xl ${message.role === "assistant" ? "bg-red-500 ml-2" : "border border-red-500 mr-2"} ${message.role === "assistant" ? "self-start ml-2" : "self-end mr-2"}`}>
+    <section className={`my-3 rounded-lg flex flex-col text-pretty max-w-[20rem] w-full shadow-2xl ${message.role === "assistant" ? "bg-red-500 ml-2" : "border border-red-500 mr-2"} ${message.role === "assistant" ? "self-start ml-2" : "self-end mr-2"}`}>
       <span className="w-full rounded-t-xl bg-red-900 p-2">
         <p className={`font-bold text-white ${ message.role === "assistant" ? "text-left" : "text-right" }`}>
           {message.role === "assistant" ? "Leo" : `${shortUser(user)} (Tú)`}

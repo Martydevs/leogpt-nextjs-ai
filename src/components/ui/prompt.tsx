@@ -96,7 +96,7 @@ export default function Prompt({
   };
 
   return (
-    <section className="w-full h-1/6">
+    <section className="w-full h-auto mb-4">
       <form
         autoComplete="off"
         className="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring w-full h-auto"

@@ -23,8 +23,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 const DynamicPromptEntry = dynamic(() => import("../../components/ui/prompt"), {
   ssr: false,
   loading: () => (
-    <section className="w-full h-1/6 border rounded-xl p-4">
-      <Skeleton className="w-full h-full rounded-xl" />
+    <section className="w-full min-h-32 border rounded-xl p-2">
+      <Skeleton className="w-full h-32 rounded-xl" />
     </section>
   ),
 });
@@ -60,7 +60,7 @@ export default function Chat() {
       {messages.length > 0 ? (
         <section
           ref={messagesRef}
-          className="h-screen w-full overflow-y-auto flex flex-col items-center"
+          className="h-full w-full max-h-screen overflow-y-auto flex flex-col items-center"
         >
           {messages.map((m) =>
             m.id === "loading" && m.role === "assistant" ? (

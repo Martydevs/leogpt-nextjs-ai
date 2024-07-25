@@ -9,8 +9,8 @@ export default function useCustomLoadingEffect(messages: Message[], messagesDisp
     if (isLoading === "in_progress") {
       messagesDispatcher([...messages, message]);
     } else {
-      const messagesWithoutLoading = messages.filter(m => m.id !== "loading");
-      messagesDispatcher(messagesWithoutLoading);
+      const messagesWithoutLoading = messages.filter(m => m.id !== "loading" && m.content !== "");
+      messagesDispatcher([...messagesWithoutLoading]);
     }
   }, [isLoading]);
   return messages
