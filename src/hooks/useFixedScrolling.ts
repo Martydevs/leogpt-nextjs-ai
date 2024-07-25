@@ -1,6 +1,7 @@
+import { Message } from "ai/react";
 import { useEffect, useRef } from "react"
 
-export default function useFixedScrolling<T>(list: T) {
+export default function useFixedScrolling(list: Message[]) {
   const elementRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {

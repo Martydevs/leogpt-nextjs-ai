@@ -1,8 +1,8 @@
 import { MessageStatus } from "@/models/assistants";
 import { Message } from "ai/react";
-import { useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
-export default function useCustomLoadingEffect(messages: Message[], messagesDispatcher: Function, isLoading: MessageStatus) {
+export default function useCustomLoadingEffect(messages: Message[], messagesDispatcher: Dispatch<SetStateAction<Message[]>>, isLoading: MessageStatus) {
   const message: Message = { id: "loading", createdAt: new Date(), content: "", role: "assistant" }
 
   useEffect(() => {

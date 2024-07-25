@@ -39,12 +39,13 @@ export default function Chat() {
     submitMessage,
     input,
     status,
+    setMessages
   } = useAssistant({ api: "/api/thread" });
-  const messages = useCustomLoadingEffect(aiMessages, submitMessage, status);
+  const messages = useCustomLoadingEffect(aiMessages, setMessages, status);
   const messagesRef = useFixedScrolling(messages);
 
   const { getUser } = useKindeBrowserClient();
-  const user = getUser()?.email ?? (getUser()?.username as string);
+  const user = getUser()?.email || (getUser()?.username as string);
 
   useEffect(() => {
     if (error) {
@@ -59,18 +60,16 @@ export default function Chat() {
       {messages.length > 0 ? (
         <section
           ref={messagesRef}
-          className="h-full w-full overflow-y-auto flex flex-col items-center"
+          className="h-screen w-full overflow-y-auto flex flex-col items-center"
         >
           {messages.map((m) =>
-            m.id === "loading" ? (
+            m.id === "loading" && m.role === "assistant" ? (
               <LoadingBubble key={m.id} />
             ) : (
               <Bubble
                 key={m.id}
+                message={m}
                 user={user}
-                role={m.role}
-                content={m.content}
-                assistantName={"Leo"}
               />
             )
           )}

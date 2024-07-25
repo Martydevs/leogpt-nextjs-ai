@@ -1,12 +1,8 @@
 "use client";
 
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-import {
-  LoginLink,
-  LogoutLink,
-  RegisterLink,
-} from "@kinde-oss/kinde-auth-nextjs/components";
-import { House, LogIn, LogOut, UserCircle, UserPlus } from "lucide-react";
+import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
+import { House, LogIn, LogOut, UserCircle } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "./button";
@@ -23,7 +19,7 @@ const DropdownMenu = dynamic(() => import("./navbar-dropdown"), {
 export default function Navbar() {
   const path = usePathname();
   const { isAuthenticated, getUser } = useKindeBrowserClient();
-  const user = getUser()?.username ?? getUser()?.email as string;
+  const user = getUser()?.username ?? (getUser()?.email as string);
 
   return (
     <nav className="min-w-full max-w-7xl p-6 border-b-2">
@@ -55,24 +51,17 @@ export default function Navbar() {
             >
               {!isAuthenticated ? (
                 <span className="w-full h-auto flex flex-col items-center gap-2">
-                  <LoginLink>
-                    <Button
-                      variant={"ghost"}
-                      className="flex items-center gap-2"
-                    >
-                      <LogIn size={24} />
-                      Iniciar sesión
-                    </Button>
-                  </LoginLink>
-                  <RegisterLink>
-                    <Button
-                      variant={"ghost"}
-                      className="flex items-center gap-2"
-                    >
-                      <UserPlus size={24} />
-                      Crear cuenta
-                    </Button>
-                  </RegisterLink>
+                  {path !== "/auth" && (
+                    <Link href="/auth">
+                      <Button
+                        variant={"ghost"}
+                        className="flex items-center gap-2"
+                      >
+                        <LogIn size={24} />
+                        Iniciar sesión
+                      </Button>
+                    </Link>
+                  )}
                 </span>
               ) : (
                 <LogoutLink>

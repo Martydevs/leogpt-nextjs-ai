@@ -1,14 +1,8 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
-export function shortUser(mail: string) {
-  if (mail?.includes("@")) {
-    return mail.split("@")[0]
-  } else {
-    return mail
-  }
-}
+export const shortUser = (mail: string) => mail?.includes("@") ? mail.split("@")[0] : mail;

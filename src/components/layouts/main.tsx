@@ -10,7 +10,7 @@ function MainLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Navbar />
-      <section className="h-screen w-full px-2 mx-auto md:px-0 lg:px-0 md:container lg:container flex flex-col items-center justify-center">
+      <section className="min-h-screen w-full mx-auto md:container lg:container flex flex-col items-center justify-between">
         {children}
       </section>
       {path !== "/chat" && <Footer />}

@@ -6,7 +6,7 @@ interface HeroProps {
 
 function Hero({ title, description, children }: HeroProps) {
   return (
-    <section className="h-full w-full flex flex-col items-center justify-center">
+    <section className="h-screen w-full flex flex-col items-center justify-center px-2">
       <h2 className="text-4xl font-extrabold text-center">Bienvenido!, <span className="bg-gradient-to-r from-orange-700 via-blue-500 to-yellow-300 text-transparent bg-clip-text animate-gradient text-4xl font-extrabold">{title}</span></h2>
       <p className="text-pretty text-center">{description}</p>
 

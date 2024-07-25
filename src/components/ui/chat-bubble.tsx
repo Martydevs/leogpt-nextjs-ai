@@ -5,17 +5,16 @@ import ChatTooltip from "./chat-tooltip";
 import useSynthesis from "@/hooks/useSynthesis";
 import { useEffect, useState } from "react";
 import { shortUser } from "@/lib/utils";
+import { Message } from "ai/react";
 
 interface BubbleProps {
-  role: string;
-  content: string;
-  assistantName: string;
+  message: Message;
   user: string;
 }
 
-function Bubble({ role, content, assistantName, user }: BubbleProps) {
+function Bubble({ message, user }: BubbleProps) {
   const [voice, setVoice] = useState<SpeechSynthesisVoice | null>(null)
-  const { isSpeaking, startToSpeak, stopToSpeak } = useSynthesis(content, voice)
+  const { isSpeaking, startToSpeak, stopToSpeak } = useSynthesis(message.content, voice)
 
   useEffect(() => {
     const browsers = navigator.userAgent
@@ -29,7 +28,7 @@ function Bubble({ role, content, assistantName, user }: BubbleProps) {
 
   const handleCopy = () => {
     toast.success("Copiado al portapapeles");
-    navigator.clipboard.writeText(content)
+    navigator.clipboard.writeText(message.content)
   }
 
   const handleSpeak = () => {
@@ -41,17 +40,17 @@ function Bubble({ role, content, assistantName, user }: BubbleProps) {
   }
 
   return (
-    <section className={`my-3 rounded-lg flex flex-col text-pretty max-w-[22rem] w-full shadow-2xl ${role === "assistant" ? "bg-red-500" : "border border-red-500"} ${role === "assistant" ? "self-start ml-2" : "self-end mr-2"}`}>
+    <section className={`my-3 rounded-lg flex flex-col text-pretty max-w-[22rem] w-full shadow-2xl ${message.role === "assistant" ? "bg-red-500 ml-2" : "border border-red-500 mr-2"} ${message.role === "assistant" ? "self-start ml-2" : "self-end mr-2"}`}>
       <span className="w-full rounded-t-xl bg-red-900 p-2">
-        <p className={`font-bold text-white ${ role === "assistant" ? "text-left" : "text-right" }`}>
-          {role === "assistant" ? assistantName : `${shortUser(user)} (Tú)`}
+        <p className={`font-bold text-white ${ message.role === "assistant" ? "text-left" : "text-right" }`}>
+          {message.role === "assistant" ? "Leo" : `${shortUser(user)} (Tú)`}
         </p>
       </span>
       <span className='w-full rounded-b-xl p-2'>
-        <p className={`text-pretty ${role === "assistant" ? "text-white text-left" : "text-right" }`}>{content}</p>
+        <p className={`text-pretty ${message.role === "assistant" ? "text-white text-left" : "text-right" }`}>{message.content}</p>
       </span>
 
-      {role === "assistant" && (
+      {message.role === "assistant" && (
         <section className="w-full flex justify-end items-center py-2">
           <ChatTooltip tooltipContent="Copiar al portapapeles">
             <Button className="mr-2 rounded-full hover:bg-red-600" variant={"ghost"} onClick={handleCopy}>
