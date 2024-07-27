@@ -1,10 +1,10 @@
 "use client";
 
-import { Message, useChat } from "ai/react";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { useAssistant } from "ai/react";
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 
 import { questions } from "@/mock/questions";
 
@@ -18,26 +18,33 @@ import Bubble from "@/components/ui/chat-bubble";
 import LoadingBubble from "@/components/ui/chat-loading-bubble";
 import Hero from "@/components/ui/hero";
 import QuestionButton from "@/components/ui/question-button";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const PromptEntry = dynamic(() => import("@/components/ui/prompt"));
+const DynamicPromptEntry = dynamic(() => import("../../components/ui/prompt"), {
+  ssr: false,
+  loading: () => (
+    <section className="w-full h-1/6 border rounded-xl p-4">
+      <Skeleton className="w-full h-full rounded-xl" />
+    </section>
+  ),
+});
 
 export default function Chat() {
   const {
-    messages: aiMessages,
     handleInputChange,
-    handleSubmit,
-    isLoading,
     error,
-    stop,
-    setMessages,
-    input,
+    messages: aiMessages,
     setInput,
-  } = useChat();
-  const messages = useCustomLoadingEffect(aiMessages, setMessages, isLoading);
-  const messagesRef = useFixedScrolling<Message[]>(messages);
+    stop,
+    submitMessage,
+    input,
+    status,
+  } = useAssistant({ api: "/api/thread" });
+  const messages = useCustomLoadingEffect(aiMessages, submitMessage, status);
+  const messagesRef = useFixedScrolling(messages);
 
   const { getUser } = useKindeBrowserClient();
-  const user = getUser();
+  const user = getUser()?.email ?? (getUser()?.username as string);
 
   useEffect(() => {
     if (error) {
@@ -55,7 +62,7 @@ export default function Chat() {
           className="h-full w-full overflow-y-auto flex flex-col items-center"
         >
           {messages.map((m) =>
-            isLoading && m.id === "loading" ? (
+            m.id === "loading" ? (
               <LoadingBubble key={m.id} />
             ) : (
               <Bubble
@@ -70,10 +77,10 @@ export default function Chat() {
         </section>
       ) : (
         <Hero
-          title={`Bienvenido!, ${shortUser(user?.email)}`}
+          title={shortUser(user)}
           description="Escriba una pregunta o bien, seleccione una de las preguntas de abajo."
         >
-          <span className="flex flex-col items-center gap-2 w-full md:flex-row lg:flex-row">
+          <span className="flex items-center gap-2 w-full">
             {[...questions].splice(0, 2).map((n, i) => (
               <QuestionButton
                 key={i}
@@ -84,26 +91,26 @@ export default function Chat() {
             ))}
           </span>
 
-          <span className="flex flex-col items-center gap-2 w-full md:flex-row lg:flex-row">
+          <span className="flex items-center gap-2 w-full">
             {[...questions].splice(2, 4).map((n, i) => (
               <QuestionButton
                 key={i}
                 handleClick={setInput}
                 title={n.title}
-                description="carreras tiene la universidad?"
+                description={n.description}
               />
             ))}
           </span>
         </Hero>
       )}
 
-      <PromptEntry
-        handleSubmit={handleSubmit}
-        handleChange={handleInputChange}
-        isLoading={isLoading}
-        stop={stop}
-        input={input}
+      <DynamicPromptEntry
         handleInput={setInput}
+        handleInputChange={handleInputChange}
+        input={input}
+        submitMessage={submitMessage}
+        status={status}
+        stop={stop}
       />
     </MainLayout>
   );

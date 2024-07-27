@@ -1,0 +1,1 @@
+export type MessageStatus = "awaiting_message" | "in_progress";

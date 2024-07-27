@@ -9,9 +9,9 @@ async function HomePage() {
 
   return (
     <MainLayout>
-      <section className="w-full h-[30vh] flex flex-col items-center justify-center text-pretty space-y-4">
-        <span className="w-full flex flex-col items-center justify-center space-y-4">
-          <h1 className="text-3xl font-extrabold text-center md:text-6xl lg:text-7xl">
+      <section className="w-full h-[30vh] flex flex-col items-center justify-center text-pretty gap-4">
+        <span className="w-full flex flex-col items-center justify-center gap-4 flex-wrap">
+          <h1 className="text-4xl font-extrabold text-center md:text-7xl lg:text-7xl">
             Estudia más <FlipWords words={palabras} />
           </h1>
           <p className="text-center md:text-xl lg:text-xl">

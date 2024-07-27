@@ -12,7 +12,7 @@ const fontSans = FontSans({
 });
 
 export const metadata: Metadata = {
-  title: "LeoGPT",
+  title: "LeoGPT - Inicio",
   description: "Asistente inteligente especializado en la UMM",
   keywords: ["chatbot", "leogpt", "umm", "asistente", "leo"],
   applicationName: "leoai",

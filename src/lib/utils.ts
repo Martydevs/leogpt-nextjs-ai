@@ -5,10 +5,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function shortUser(mail: string | null | undefined) {
-  if (!mail) {
-    return ""
+export function shortUser(mail: string) {
+  if (mail?.includes("@")) {
+    return mail.split("@")[0]
   } else {
-    return mail?.split("@")[0]
+    return mail
   }
 }
